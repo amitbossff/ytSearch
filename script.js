@@ -4,6 +4,12 @@ const searchBox = document.getElementById("searchBox");
 
 searchBox.addEventListener("input", () => {
   if (searchBox.value.trim() !== "") {
+    
+    // Remove previous highlight
+    document.querySelectorAll(".option").forEach(opt => 
+      opt.classList.remove("active")
+    );
+
     popup.style.display = "flex";
   }
 });
