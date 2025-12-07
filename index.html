@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg">
+    </div>
+
+    <input type="text" id="searchBox" placeholder="Search YouTube..." autocomplete="off">
+
+    <footer>Powered by YouTube</footer>
+  </div>
+
+  <!-- POPUP -->
+  <div class="popup-bg" id="popup">
+    <div class="popup-box">
+      <div class="popup-title">Choose Filter</div>
+
+      <div class="option" onclick="selectFilter('hour')">Last Hour</div>
+      <div class="option" onclick="selectFilter('today')">Today</div>
+      <div class="option" onclick="selectFilter('week')">This Week</div>
+      <div class="option" onclick="selectFilter('month')">This Month</div>
+
+      <div class="popup-buttons">
+        <button class="btn cancel-btn" onclick="closePopup()">Cancel</button>
+        <button class="btn apply-btn" onclick="applyFilter()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js').then(registration => {
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              if (confirm("A new version is available. Update now?")) {
+                newWorker.postMessage('skipWaiting');
+                window.location.reload();
+              }
+            }
+          });
+        });
+      });
+
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.getRegistration().then(reg => {
+          if (reg) reg.update();
+        });
+      });
+    }
+  </script>
+</body>
+</html>
