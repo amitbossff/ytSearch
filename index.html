@@ -27,34 +27,34 @@
       width: 320px;
       text-align: center;
     }
-    .input-wrap {
-      position: relative;
-    }
     input {
-      width: 70%;
-      padding: 12px 36px 12px 12px;
+      width: 100%;
+      padding: 12px;
       border-radius: 6px;
       border: none;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       font-size: 15px;
     }
-    .clear-btn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 18px;
-      opacity: 0.6;
-      user-select: none;
+    .btn-row {
+      display: flex;
+      gap: 10px;
     }
-    button {
-      width: 100%;
+    .search-btn {
+      flex: 1;
       padding: 12px;
       background: #ff0000;
       border: none;
       color: white;
       font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .clear-btn {
+      width: 56px;
+      background: #333;
+      border: none;
+      color: white;
+      font-size: 22px;
       border-radius: 6px;
       cursor: pointer;
     }
@@ -71,17 +71,18 @@
   <div class="box">
     <h2>YouTube Last Hour</h2>
 
-    <div class="input-wrap">
-      <input
-        type="text"
-        id="query"
-        placeholder="Enter search keyword"
-        autocomplete="off"
-      />
-      <span id="clearBtn" class="clear-btn">✖</span>
-    </div>
+    <input
+      type="text"
+      id="query"
+      placeholder="Enter search keyword"
+      autocomplete="off"
+    />
 
-    <button onclick="searchYT()">Search</button>
+    <!-- Buttons in one line -->
+    <div class="btn-row">
+      <button class="search-btn" onclick="searchYT()">Search</button>
+      <button class="clear-btn" id="clearBtn">✖</button>
+    </div>
 
     <small>
       Not affiliated with YouTube.<br>
