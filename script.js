@@ -1,48 +1,31 @@
-let selectedFilter = null;
-const popup = document.getElementById("popup");
-const searchBox = document.getElementById("searchBox");
 
-searchBox.addEventListener("input", () => {
-  if (searchBox.value.trim() !== "") {
-    
-    // Remove previous highlight
-    document.querySelectorAll(".option").forEach(opt => 
-      opt.classList.remove("active")
-    );
+function searchYT() {
+  const input = document.getElementById("query");
+  const q = input.value.trim();
 
-    popup.style.display = "flex";
+  if (!q) {
+    alert("Please enter a search keyword");
+    return;
   }
+
+  const encoded = encodeURIComponent(q);
+
+  const url =
+    `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%3D%3D`;
+
+  window.location.href = url;
+}
+
+// Clear input
+const inputEl = document.getElementById("query");
+const clearBtn = document.getElementById("clearBtn");
+
+clearBtn.addEventListener("click", () => {
+  inputEl.value = "";
+  inputEl.focus();
 });
 
-function closePopup() {
-  popup.style.display = "none";
-}
-
-function selectFilter(type) {
-  selectedFilter = type;
-
-  document.querySelectorAll(".option").forEach(opt => opt.classList.remove("active"));
-  event.target.classList.add("active");
-}
-
-function applyFilter() {
-  if (!searchBox.value.trim()) return;
-
-  const query = encodeURIComponent(searchBox.value.trim());
-
-  let filterCode = "";
-  switch (selectedFilter) {
-    case "hour": filterCode = "EgIIAQ%3D%3D"; break;
-    case "today": filterCode = "EgQIAhAB"; break;
-    case "week": filterCode = "EgQIAxAB"; break;
-    case "month": filterCode = "EgQIBBAB"; break;
-  }
-
-  const url = `https://www.youtube.com/results?search_query=${query}&sp=${filterCode}`;
-
-  window.open(url, "_blank");
-
-  closePopup();
-  searchBox.value = "";
-  selectedFilter = null;
+// Register service worker (SAFE)
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
 }

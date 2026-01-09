@@ -2,66 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>YouTube</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YouTube Last Hour Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description" content="Search YouTube videos uploaded in the last hour. Not affiliated with YouTube." />
 
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .box {
+      background: #1c1c1c;
+      padding: 25px;
+      border-radius: 12px;
+      width: 320px;
+      text-align: center;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    input {
+      width: 100%;
+      padding: 12px 36px 12px 12px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.6;
+      user-select: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #ff0000;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    small {
+      display: block;
+      margin-top: 15px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg">
+  <div class="box">
+    <h2>YouTube Last Hour</h2>
+
+    <div class="input-wrap">
+      <input
+        type="text"
+        id="query"
+        placeholder="Enter search keyword"
+        autocomplete="off"
+      />
+      <span id="clearBtn" class="clear-btn">✖</span>
     </div>
 
-    <input type="text" id="searchBox" placeholder="Search YouTube..." autocomplete="off">
+    <button onclick="searchYT()">Search</button>
 
-    <footer>Powered by YouTube</footer>
-  </div>
-
-  <!-- POPUP -->
-  <div class="popup-bg" id="popup">
-    <div class="popup-box">
-      <div class="popup-title">Choose Filter</div>
-
-      <div class="option" onclick="selectFilter('hour')">Last Hour</div>
-      <div class="option" onclick="selectFilter('today')">Today</div>
-      <div class="option" onclick="selectFilter('week')">This Week</div>
-      <div class="option" onclick="selectFilter('month')">This Month</div>
-
-      <div class="popup-buttons">
-        <button class="btn cancel-btn" onclick="closePopup()">Cancel</button>
-        <button class="btn apply-btn" onclick="applyFilter()">Apply</button>
-      </div>
-    </div>
+    <small>
+      Not affiliated with YouTube.<br>
+      Redirect happens only on user click.
+    </small>
   </div>
 
   <script src="script.js"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./service-worker.js').then(registration => {
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              if (confirm("A new version is available. Update now?")) {
-                newWorker.postMessage('skipWaiting');
-                window.location.reload();
-              }
-            }
-          });
-        });
-      });
-
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.getRegistration().then(reg => {
-          if (reg) reg.update();
-        });
-      });
-    }
-  </script>
 </body>
 </html>
