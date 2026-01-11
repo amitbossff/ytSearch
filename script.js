@@ -1,31 +1,17 @@
+function searchYT(e) {
+  e.preventDefault();
 
-function searchYT() {
-  const input = document.getElementById("query");
-  const q = input.value.trim();
+  const q = document.getElementById("query").value.trim();
+  if (!q) return;
 
-  if (!q) {
-    alert("Please enter a search keyword");
-    return;
-  }
-
-  const encoded = encodeURIComponent(q);
-
-  const url =
-    `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%3D%3D`;
-
-  window.location.href = url;
+  window.location.href =
+    "https://www.youtube.com/results?search_query=" +
+    encodeURIComponent(q) +
+    "&sp=EgIIAQ%3D%3D";
 }
 
-// Clear input
-const inputEl = document.getElementById("query");
-const clearBtn = document.getElementById("clearBtn");
-
-clearBtn.addEventListener("click", () => {
-  inputEl.value = "";
-  inputEl.focus();
-});
-
-// Register service worker (SAFE)
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+function clearInput() {
+  const input = document.getElementById("query");
+  input.value = "";
+  input.focus();
 }

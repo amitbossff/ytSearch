@@ -1,8 +1,20 @@
 {
-  "name": "YouTube Last Hour Search",
-  "short_name": "YT Hour",
-  "start_url": "/",
+  "name": "AmitTG",
+  "short_name": "YT AmitTG",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#ff0000"
+  "background_color": "#ffffff",
+  "theme_color": "#dc3545",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
