@@ -2,50 +2,41 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AmitTG – Pro App</title>
+<title>AmitTG</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+/>
 
-
-<meta name="description" content="Search trending YouTube videos uploaded in the last one hour. Fast, simple and lightweight web app.">
+<meta name="description" content="Search trending YouTube videos uploaded in the last one hour.">
 <meta name="robots" content="index, follow">
-
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#dc2626">
+
+  <meta name="google-site-verification" content="esqO1GQiD9X_I9SSbMVTK5tfQLLAYjhPKzhf8swWdFw" />
+  
 
 
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="AmitTG">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="msapplication-navbutton-color" content="#dc2626">
-
-
-  <meta name="google-site-verification" content="esqO1GQiD9X_I9SSbMVTK5tfQLLAYjhPKzhf8swWdFw" />
-  
-
-
-<meta property="og:title" content="AmitTG – YouTube Trending Search">
-<meta property="og:description" content="Find YouTube videos uploaded in the last one hour.">
-<meta property="og:type" content="website">
-
 
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
   rel="stylesheet"
 />
 
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
 
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="app-shell">
+<div class="app-shell" id="appShell">
 
   <div class="app-header">
     <div class="app-title">AmitTG</div>
@@ -62,6 +53,8 @@
         id="query"
         placeholder="Search videos, topics, creators..."
         required
+        onfocus="moveUp()"
+        onblur="moveDown()"
       >
     </div>
 
@@ -82,19 +75,21 @@
   </form>
 
   <div class="app-footer">
-     AmitTG
+    AmitTG
   </div>
 
 </div>
 
-
 <script src="script.js"></script>
 
-
 <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-  }
+document.addEventListener("touchmove", function(e) {
+  e.preventDefault();
+}, { passive: false });
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
 </script>
 
 </body>
