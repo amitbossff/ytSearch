@@ -1,68 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Video Search | AmitTG</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <meta charset="UTF-8">
+  <title>Latest Videos Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#dc2626">
+  <!-- Icons & Font -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <div class="bg-blur bg-1"></div>
-  <div class="bg-blur bg-2"></div>
-    
-  <main class="main-content">
-    <header class="app-header">
-      <div class="logo-icon"><i class="bi bi-play-circle-fill"></i></div>
-      <h1 class="app-title">Radhe Radhe</h1>
-    </header>
 
-    <div class="search-card">
-      <div class="input-wrapper">
-        <i class="bi bi-search input-icon"></i>
-        <input type="text" id="searchBox" class="search-input" placeholder="Paste here..." autocomplete="off">
-      </div>
+<div class="app">
 
-      <button class="btn-primary" id="pasteBtn">
-        <i class="bi bi-clipboard2-check-fill"></i> Paste
-      </button>
-      
-      <p class="instruction">Regards • Video Trade</p>
+  <header class="header">
+    <div class="logo">
+      <i class="bi bi-play-fill"></i>
+    </div>
+    <h1>Latest Videos</h1>
+    <p>Colourful • Curved • Animated</p>
+  </header>
 
-      <div class="filter-section">
-        <button id="filterToggle" class="btn-filter">
-          <i class="bi bi-calendar-event"></i> Switch to Today
-        </button>
-      </div>
+  <main class="card">
+    <div class="input-box">
+      <i class="bi bi-search"></i>
+      <input id="q" placeholder="Search YouTube...">
+    </div>
+
+    <button id="pasteBtn">
+      <i class="bi bi-clipboard-check"></i>
+      Paste & Search
+    </button>
+
+    <div class="filters">
+      <div class="filter active" data="EgIIAQ%3D%3D">Hour</div>
+      <div class="filter" data="EgQIAhAB">Today</div>
+      <div class="filter" data="EgQIAxAB">Week</div>
     </div>
   </main>
 
-  <div id="toast" class="toast">Sifted to Today filter</div>
+  <footer>
+    Ultra Curved • Neon UI
+  </footer>
+</div>
 
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-box">
-      <i class="bi bi-x-circle close-modal" id="closeModal"></i>
-      <div class="modal-icon"><i class="bi bi-clipboard-x"></i></div>
-      <h3>Clipboard Error</h3>
-      <p>Unable to access clipboard. Please paste your link manually into the search box. If You need paste then Go to Chrome and Add to Home Screen</p>
-      <button class="btn-primary" style="height: 45px;" onclick="document.getElementById('modalOverlay').style.display='none'">Got it</button>
-    </div>
+<!-- Clipboard Modal -->
+<div class="modal-overlay" id="clipModal">
+  <div class="modal">
+    <div class="modal-icon">📋</div>
+    <h3>Clipboard Access</h3>
+    <p>Clipboard permission denied.<br>Please paste manually.</p>
+    <button onclick="closeModal()">Got it</button>
   </div>
+</div>
 
-  <script src="script.js"></script>
-
- <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
-    }
-  </script>
-
-
+<script src="script.js"></script>
 </body>
 </html>
