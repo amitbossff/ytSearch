@@ -1,270 +1,254 @@
+(function() {
+  const searchBox = document.getElementById("searchBox");
+  const clearBtn = document.getElementById("clearBtn");
+  const pasteBtn = document.getElementById("pasteBtn");
+  const searchBtn = document.getElementById("searchBtn");
+  const popupOverlay = document.getElementById("popupOverlay");
+  const popupClose = document.getElementById("popupClose");
+  const modeButtons = document.querySelectorAll('.mode-btn');
+  const dailyCountSpan = document.getElementById('dailyCount');
 
-const searchBox = document.getElementById("searchBox");
-const pasteBtn = document.getElementById("pasteBtn");
-const popupOverlay = document.getElementById("popupOverlay");
-const popupClose = document.getElementById("popupClose");
-const modeButtons = document.querySelectorAll('.mode-btn');
-const currentModeText = document.getElementById('currentModeText');
+  let currentMode = "hour";
+  let inputTimeout = null;
+  let hasSearched = false;
+  let isRedirecting = false;
 
-let lastValue = "";
-let isRedirecting = false;
-let currentMode = "hour";
-let inputTimeout = null;
+  const modeFilters = {
+    hour: "EgIIAQ%3D%3D",
+    today: "EgIIAg%3D%3D",
+    normal: ""
+  };
 
-
-const originalPasteBtnHTML = pasteBtn.innerHTML;
-
-const modeFilters = {
-  hour: "EgIIAQ%3D%3D",
-  today: "EgIIAg%3D%3D",
-  normal: ""
-};
-
-const modeTexts = {
-  hour: "Last Hour Videos",
-  today: "Today's Videos",
-  normal: "All Videos"
-};
-
-
-const canPaste = () => navigator.clipboard && typeof navigator.clipboard.readText === "function";
-
-
-function setActiveMode(mode) {
-  modeButtons.forEach(btn => btn.classList.remove('active'));
-  const activeBtn = document.querySelector(`[data-mode="${mode}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
-  
-  currentMode = mode;
-  currentModeText.textContent = `Searching: ${modeTexts[mode]}`;
-  localStorage.setItem('preferredMode', mode);
-}
-
-
-function resetToInitialState() {
-  searchBox.value = "";
-  pasteBtn.innerHTML = originalPasteBtnHTML;
-  pasteBtn.style.opacity = '1';
-  pasteBtn.disabled = false;
-  isRedirecting = false;
-  lastValue = "";
-  searchBox.focus();
-}
-
-function isYouTubeUrl(text) {
-  const youtubePatterns = [
-    /youtu\.be\/[a-zA-Z0-9_-]+/i,
-    /youtube\.com\/watch\?v=[a-zA-Z0-9_-]+/i,
-    /youtube\.com\/embed\/[a-zA-Z0-9_-]+/i,
-    /youtube\.com\/shorts\/[a-zA-Z0-9_-]+/i
-  ];
-  
-  return youtubePatterns.some(pattern => pattern.test(text));
-}
-
-function extractVideoId(url) {
-  
-  const youtuBeMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-  if (youtuBeMatch) return youtuBeMatch[1];
-  
-  
-  const youtubeMatch = url.match(/(?:v=|embed\/|shorts\/)([a-zA-Z0-9_-]+)/);
-  if (youtubeMatch) return youtubeMatch[1];
-  
-  return null;
-}
-
-function doSearch() {
-  const value = searchBox.value.trim();
-  if (!value || isRedirecting) return;
-
-  
-  const currentValue = value;
-  
-  
-  if (value === lastValue && !searchBox.dataset.allowResearch) {
-    return;
+  function getDailySearchCount() {
+    const today = new Date().toDateString();
+    const stored = localStorage.getItem('dailySearchData');
+    if (stored) {
+      try {
+        const data = JSON.parse(stored);
+        if (data.date === today) return data.count;
+      } catch (e) {}
+    }
+    return 0;
   }
 
-  isRedirecting = true;
-  lastValue = currentValue;
+  function incrementDailySearchCount() {
+    const today = new Date().toDateString();
+    let currentCount = getDailySearchCount();
+    currentCount++;
+    localStorage.setItem('dailySearchData', JSON.stringify({
+      date: today,
+      count: currentCount
+    }));
+    updateDailyCountDisplay();
+    return currentCount;
+  }
 
-  
-  pasteBtn.innerHTML = '<i class="bi bi-search"></i> Searching...';
-  pasteBtn.style.opacity = '0.9';
-  pasteBtn.disabled = true;
+  function updateDailyCountDisplay() {
+    dailyCountSpan.textContent = getDailySearchCount();
+    dailyCountSpan.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+      dailyCountSpan.style.transform = 'scale(1)';
+    }, 150);
+  }
 
-  
-  let url;
-  if (isYouTubeUrl(currentValue)) {
-   
-    const videoId = extractVideoId(currentValue);
-    if (videoId) {
-     
-      url = `https://m.youtube.com/watch?v=${videoId}`;
+  function checkAndResetDaily() {
+    const today = new Date().toDateString();
+    const stored = localStorage.getItem('dailySearchData');
+    if (!stored) {
+      localStorage.setItem('dailySearchData', JSON.stringify({ date: today, count: 0 }));
     } else {
-      
-      const query = encodeURIComponent(currentValue);
-      const filter = modeFilters[currentMode];
-      url = `https://m.youtube.com/results?search_query=${query}${filter ? `&sp=${filter}` : ''}`;
+      try {
+        const data = JSON.parse(stored);
+        if (data.date !== today) {
+          localStorage.setItem('dailySearchData', JSON.stringify({ date: today, count: 0 }));
+        }
+      } catch (e) {
+        localStorage.setItem('dailySearchData', JSON.stringify({ date: today, count: 0 }));
+      }
     }
-  } else {
-    
-    const query = encodeURIComponent(currentValue);
-    const filter = modeFilters[currentMode];
-    url = `https://m.youtube.com/results?search_query=${query}${filter ? `&sp=${filter}` : ''}`;
+    updateDailyCountDisplay();
   }
 
-  
-  localStorage.setItem('lastSearch', currentValue);
-  localStorage.setItem('lastMode', currentMode);
+  const canPaste = () => navigator.clipboard && typeof navigator.clipboard.readText === "function";
 
-  
-  searchBox.value = "";
-  
- 
-  searchBox.dataset.allowResearch = 'true';
+  function setActiveMode(mode) {
+    modeButtons.forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.querySelector(`[data-mode="${mode}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+    currentMode = mode;
+    localStorage.setItem('preferredMode', mode);
+  }
 
-  
-  setTimeout(() => {
-   
-    try {
-      window.location.href = url;
-    } catch (error) {
-      console.error("Redirect error:", error);
-      
-      window.open(url, '_blank');
-      resetToInitialState();
+  function updateClearButton() {
+    if (searchBox.value.trim().length > 0 && !isRedirecting) {
+      clearBtn.classList.remove('hidden');
+    } else {
+      clearBtn.classList.add('hidden');
     }
-  }, 100);
-}
-
-function handleInput() {
- 
-  if (searchBox.dataset.allowResearch) {
-    delete searchBox.dataset.allowResearch;
-  }
-  
-  if (inputTimeout) clearTimeout(inputTimeout);
-  
-  inputTimeout = setTimeout(() => {
-    if (searchBox.value.trim().length >= 1) {
-      doSearch();
-    }
-  }, 400);
-}
-
-
-searchBox.addEventListener("input", handleInput);
-
-searchBox.addEventListener("keypress", (e) => {
-  if (e.key === 'Enter') {
-    doSearch();
-  }
-});
-
-
-searchBox.addEventListener("focus", () => {
-  pasteBtn.innerHTML = originalPasteBtnHTML;
-  pasteBtn.style.opacity = '1';
-  pasteBtn.disabled = false;
-});
-
-pasteBtn.addEventListener("click", async () => {
-  
-  pasteBtn.style.transform = "scale(0.98)";
-  setTimeout(() => pasteBtn.style.transform = "", 100);
-
-  if (!canPaste()) {
-    popupOverlay.style.display = "flex";
-    return;
   }
 
-  try {
-    const text = await navigator.clipboard.readText();
-    if (text && text.trim()) {
-    
-      searchBox.value = text.trim();
-      
-      
-      setTimeout(() => doSearch(), 50);
-    }
-  } catch (err) {
-    popupOverlay.style.display = "flex";
-  }
-});
-
-modeButtons.forEach(button => {
-  button.addEventListener('click', function() {
-    const mode = this.getAttribute('data-mode');
-    setActiveMode(mode);
-    if (searchBox.value.trim().length >= 1) {
-      
-      setTimeout(() => doSearch(), 50);
-    }
-  });
-});
-
-popupClose.addEventListener("click", () => {
-  popupOverlay.style.display = "none";
-});
-
-popupOverlay.addEventListener("click", (e) => {
-  if (e.target === popupOverlay) popupOverlay.style.display = "none";
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const savedMode = localStorage.getItem('preferredMode');
-  if (savedMode && modeFilters[savedMode]) {
-    setActiveMode(savedMode);
-  }
-  
-  
-  localStorage.removeItem('lastSearch');
-  localStorage.removeItem('lastMode');
-  
-  
-  resetToInitialState();
-  
-  
-  setTimeout(() => {
+  function clearSearch() {
+    if (isRedirecting) return;
+    searchBox.value = "";
+    hasSearched = false;
+    updateClearButton();
     searchBox.focus();
-  }, 100);
-});
+  }
 
-
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) {
+  function openYouTubeSearch(query, mode) {
+    const filter = modeFilters[mode];
+    const encodedQuery = encodeURIComponent(query);
+    let youtubeUrl;
     
-    resetToInitialState();
+    if (filter) {
+      youtubeUrl = `https://www.youtube.com/results?search_query=${encodedQuery}&sp=${filter}`;
+    } else {
+      youtubeUrl = `https://www.youtube.com/results?search_query=${encodedQuery}`;
+    }
+    
+    window.location.href = youtubeUrl;
   }
-});
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(console.error);
+  function doSearch() {
+    const value = searchBox.value.trim();
+    if (!value || isRedirecting) return;
+
+    hasSearched = true;
+    isRedirecting = true;
+    
+    incrementDailySearchCount();
+
+    pasteBtn.classList.add('redirecting');
+    pasteBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> ';
+    pasteBtn.disabled = true;
+    searchBtn.disabled = true;
+    
+    clearBtn.classList.add('hidden');
+    
+    setTimeout(() => {
+      openYouTubeSearch(value, currentMode);
+    }, 100);
+  }
+
+  searchBox.addEventListener("input", () => {
+    updateClearButton();
+    if (inputTimeout) clearTimeout(inputTimeout);
+    if (!isRedirecting) {
+      hasSearched = false;
+      inputTimeout = setTimeout(() => {
+        if (searchBox.value.trim().length >= 1) {
+          doSearch();
+        }
+      }, 400);
+    }
+  }, { passive: true });
+
+  searchBox.addEventListener("keypress", (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!isRedirecting) {
+        hasSearched = false;
+        doSearch();
+      }
+    }
   });
-}
 
-
-document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'v' && document.activeElement !== searchBox) {
+  clearBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    pasteBtn.click();
-  }
-  
-  if (!isRedirecting) {
-    if (e.key === '1') setActiveMode('hour');
-    else if (e.key === '2') setActiveMode('today');
-    else if (e.key === '3') setActiveMode('normal');
-  }
-});
+    e.stopPropagation();
+    clearSearch();
+  });
 
+  searchBtn.addEventListener("click", () => {
+    if (isRedirecting) return;
+    searchBtn.style.transform = "scale(0.96)";
+    setTimeout(() => searchBtn.style.transform = "", 100);
+    
+    const value = searchBox.value.trim();
+    if (value) {
+      hasSearched = false;
+      doSearch();
+    } else {
+      searchBox.style.borderColor = '#ff4d4d';
+      setTimeout(() => {
+        searchBox.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+      }, 300);
+    }
+  });
 
-function isMobileDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
+  pasteBtn.addEventListener("click", async () => {
+    if (isRedirecting) return;
+    
+    if (!canPaste()) {
+      popupOverlay.style.display = "flex";
+      return;
+    }
 
-if (isMobileDevice()) {
-  console.log("Mobile device detected - optimized for m.youtube.com");
-}
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text && text.trim() && !isRedirecting) {
+        searchBox.value = text.trim();
+        hasSearched = false;
+        updateClearButton();
+        doSearch();
+      }
+    } catch (err) {
+      popupOverlay.style.display = "flex";
+    }
+  });
+
+  modeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const mode = this.dataset.mode;
+      setActiveMode(mode);
+    });
+  });
+
+  popupClose.addEventListener("click", () => {
+    popupOverlay.style.display = "none";
+  });
+
+  popupOverlay.addEventListener("click", (e) => {
+    if (e.target === popupOverlay) popupOverlay.style.display = "none";
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    checkAndResetDaily();
+    const savedMode = localStorage.getItem('preferredMode');
+    if (savedMode && modeFilters[savedMode]) {
+      setActiveMode(savedMode);
+    } else {
+      setActiveMode('hour');
+    }
+    searchBox.value = "";
+    hasSearched = false;
+    isRedirecting = false;
+    updateClearButton();
+    searchBox.focus();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      pasteBtn.classList.remove('redirecting');
+      pasteBtn.innerHTML = '<i class="bi bi-clipboard"></i> Paste';
+      pasteBtn.disabled = false;
+      searchBtn.disabled = false;
+      isRedirecting = false;
+      updateClearButton();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'v' && document.activeElement !== searchBox) {
+      e.preventDefault();
+      if (!isRedirecting) {
+        pasteBtn.click();
+      }
+    }
+    if (!isRedirecting) {
+      if (e.key === '1') setActiveMode('hour');
+      else if (e.key === '2') setActiveMode('today');
+      else if (e.key === '3') setActiveMode('normal');
+    }
+  });
+})();
