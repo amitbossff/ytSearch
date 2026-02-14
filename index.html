@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Find Latest Video's</title>
+  <title>TubeFind • Smart YouTube Search</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a1a">
@@ -10,126 +10,139 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
-  <div class="bg-elements">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <div class="mesh-bg"></div>
+  <div class="floating-particles">
+    <span style="left: 10%; animation-delay: 0s;"></span>
+    <span style="left: 30%; animation-delay: 2s;"></span>
+    <span style="left: 50%; animation-delay: 5s;"></span>
+    <span style="left: 70%; animation-delay: 1s;"></span>
+    <span style="left: 90%; animation-delay: 4s;"></span>
   </div>
 
   <div class="container">
-    <div class="card-ui">
-      <div class="header">
-        <div class="left-logo">
-          <i class="bi bi-youtube"></i>
+    <div class="app-card">
+      <!-- Modern Header - Without Settings and History buttons -->
+      <div class="app-header">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <i class="bi bi-youtube"></i>
+          </div>
+          <span class="logo-text">Radhe Radhe</span>
         </div>
-        <div class="brand-name">
-          <span>Radhe Radhe</span>
-        </div>
-        <div class="right-logo">
-          <i class="bi bi-youtube"></i>
-        </div>
+       
       </div>
 
-      <div class="stats-card">
-        <div class="stats-left">
-          <div class="stats-icon">
+      
+      <div class="stats-modern">
+        <div class="stats-modern-left">
+          <div class="stats-modern-icon">
             <i class="bi bi-search-heart"></i>
           </div>
-          <div class="stats-info">
-            <h4>Today's Searches</h4>
-            <span class="count" id="dailyCount">0</span>
+          <div class="stats-modern-info">
+            <h4>TODAY'S SEARCHES</h4>
+            <span class="stats-modern-number" id="dailyCount">0</span>
           </div>
         </div>
-        <div class="reset-badge" id="resetTime">
+        <div class="stats-modern-badge" id="resetTime">
           <i class="bi bi-arrow-repeat"></i>
-          <span>12am</span>
+          <span>Resets at 12am</span>
         </div>
       </div>
 
-      <div class="search-container">
-        <div class="search-box">
-          <span class="search-icon">
+     
+      <div class="search-modern">
+        <div class="search-modern-box">
+          <span class="search-modern-icon">
             <i class="bi bi-link-45deg"></i>
           </span>
           <input
             type="text"
             id="searchBox"
-            placeholder="Paste here..."
+            placeholder="Paste search tag..."
             autocomplete="off"
             spellcheck="false"
           >
         </div>
-        <button class="clear-btn hidden" id="clearBtn" title="Clear search">
+        <button class="clear-modern hidden" id="clearBtn" title="Clear">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
 
-      <div class="button-container">
-        <button class="btn-search-icon" id="searchBtn" title="Search now">
+     
+      <div class="action-grid">
+        <button class="action-btn-primary" id="pasteBtn">
+          <i class="bi bi-clipboard"></i>
+          Paste Directly
+        </button>
+        <button class="action-btn-secondary" id="searchBtn" title="Search">
           <i class="bi bi-search"></i>
         </button>
-        <button class="btn-paste" id="pasteBtn">
-          <i class="bi bi-clipboard"></i>
-          Paste
-        </button>
       </div>
 
-      <div class="mode-container">
-        <button class="mode-btn active" data-mode="hour">
-          <i class="bi bi-clock"></i>
-          Hour
-        </button>
-        <button class="mode-btn" data-mode="today">
-          <i class="bi bi-calendar-day"></i>
-          Today
-        </button>
-        <button class="mode-btn" data-mode="normal">
-          <i class="bi bi-globe"></i>
-          All
-        </button>
+      
+      <div class="mode-selector-modern">
+        <div class="mode-selector-trigger" id="modeSelectorBtn">
+          <div class="mode-trigger-left">
+            <i class="bi bi-funnel"></i>
+            <span>Search Filter</span>
+          </div>
+          <div class="mode-trigger-right">
+            <span class="current-mode-chip" id="currentModeText"> Last Hour</span>
+            <i class="bi bi-chevron-down" id="dropdownArrow"></i>
+          </div>
+        </div>
+
+        <div class="mode-dropdown-modern" id="modeDropdown">
+          <button class="mode-item selected" data-mode="hour">
+            <div class="mode-item-icon"><i class="bi bi-clock"></i></div>
+            <span class="mode-item-text">Last Hour</span>
+            <span class="mode-item-badge">Recent</span>
+          </button>
+          <button class="mode-item" data-mode="today">
+            <div class="mode-item-icon"><i class="bi bi-calendar-day"></i></div>
+            <span class="mode-item-text">Today</span>
+            <span class="mode-item-badge">24h</span>
+          </button>
+          <button class="mode-item" data-mode="normal">
+            <div class="mode-item-icon"><i class="bi bi-globe"></i></div>
+            <span class="mode-item-text">All Time</span>
+            <span class="mode-item-badge">Everything</span>
+          </button>
+        </div>
       </div>
 
-      <div class="footer-text">
-        Regards • Video Trade
+     
+      <div class="app-footer">
+        Regards • Video Trade 
       </div>
     </div>
   </div>
 
   <div class="popup-overlay" id="popupOverlay">
-    <div class="popup-box">
+    <div class="popup-modern">
       <button class="popup-close" id="popupClose">✕</button>
       <h3>
         <i class="bi bi-exclamation-triangle"></i> 
-        Clipboard Access Required
+        Clipboard Access
       </h3>
       <div class="popup-content">
-        <p>Paste feature not supported in this browser</p>
+        <p>Paste feature not supported</p>
         
         <div class="popup-steps">
           <ol>
             <li>Use <strong>Chrome</strong>, <strong>Edge</strong>, or <strong>Safari</strong></li>
-            <li>Add this site to home screen</li>
+            <li>Add to home screen</li>
             <li>Install our app</li>
           </ol>
         </div>
 
         <div class="popup-note">
-          <i class="bi bi-pencil-square"></i>
-          You can still type manually in the search box.
+          <i class="bi bi-pencil-square"></i> Type manually in search box
         </div>
       </div>
     </div>
   </div>
 
   <script src="script.js"></script>
-
-<script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
-    }
-  </script>
-
 </body>
 </html>

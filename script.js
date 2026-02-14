@@ -5,7 +5,13 @@
   const searchBtn = document.getElementById("searchBtn");
   const popupOverlay = document.getElementById("popupOverlay");
   const popupClose = document.getElementById("popupClose");
-  const modeButtons = document.querySelectorAll('.mode-btn');
+  
+  const modeSelectorBtn = document.getElementById("modeSelectorBtn");
+  const modeDropdown = document.getElementById("modeDropdown");
+  const dropdownArrow = document.getElementById("dropdownArrow");
+  const currentModeText = document.getElementById("currentModeText");
+  const modeOptions = document.querySelectorAll('.mode-item');
+  
   const dailyCountSpan = document.getElementById('dailyCount');
 
   let currentMode = "hour";
@@ -17,6 +23,12 @@
     hour: "EgIIAQ%3D%3D",
     today: "EgIIAg%3D%3D",
     normal: ""
+  };
+
+  const modeDisplayNames = {
+    hour: "Hour",
+    today: "Today",
+    normal: "All"
   };
 
   function getDailySearchCount() {
@@ -72,11 +84,22 @@
   const canPaste = () => navigator.clipboard && typeof navigator.clipboard.readText === "function";
 
   function setActiveMode(mode) {
-    modeButtons.forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.querySelector(`[data-mode="${mode}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
+   
+    modeOptions.forEach(opt => {
+      if (opt.dataset.mode === mode) {
+        opt.classList.add('selected');
+      } else {
+        opt.classList.remove('selected');
+      }
+    });
+    
     currentMode = mode;
+    currentModeText.textContent = modeDisplayNames[mode];
     localStorage.setItem('preferredMode', mode);
+    
+    modeDropdown.classList.remove('show');
+    modeSelectorBtn.classList.remove('active');
+    dropdownArrow.style.transform = '';
   }
 
   function updateClearButton() {
@@ -119,7 +142,7 @@
     incrementDailySearchCount();
 
     pasteBtn.classList.add('redirecting');
-    pasteBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> ';
+    pasteBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Searching...';
     pasteBtn.disabled = true;
     searchBtn.disabled = true;
     
@@ -130,6 +153,45 @@
     }, 100);
   }
 
+ 
+  modeSelectorBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const isOpen = modeDropdown.classList.contains('show');
+    
+    if (isOpen) {
+      modeDropdown.classList.remove('show');
+      modeSelectorBtn.classList.remove('active');
+      dropdownArrow.style.transform = '';
+    } else {
+      modeDropdown.classList.add('show');
+      modeSelectorBtn.classList.add('active');
+      dropdownArrow.style.transform = 'rotate(180deg)';
+    }
+  });
+
+  
+  modeOptions.forEach(option => {
+    option.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const mode = option.dataset.mode;
+      setActiveMode(mode);
+    });
+  });
+
+  
+  document.addEventListener('click', (e) => {
+    if (!modeSelectorBtn.contains(e.target) && !modeDropdown.contains(e.target)) {
+      modeDropdown.classList.remove('show');
+      modeSelectorBtn.classList.remove('active');
+      dropdownArrow.style.transform = '';
+    }
+  });
+
+  
   searchBox.addEventListener("input", () => {
     updateClearButton();
     if (inputTimeout) clearTimeout(inputTimeout);
@@ -161,9 +223,6 @@
 
   searchBtn.addEventListener("click", () => {
     if (isRedirecting) return;
-    searchBtn.style.transform = "scale(0.96)";
-    setTimeout(() => searchBtn.style.transform = "", 100);
-    
     const value = searchBox.value.trim();
     if (value) {
       hasSearched = false;
@@ -171,7 +230,7 @@
     } else {
       searchBox.style.borderColor = '#ff4d4d';
       setTimeout(() => {
-        searchBox.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+        searchBox.style.borderColor = 'rgba(255, 255, 255, 0.1)';
       }, 300);
     }
   });
@@ -195,13 +254,6 @@
     } catch (err) {
       popupOverlay.style.display = "flex";
     }
-  });
-
-  modeButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const mode = this.dataset.mode;
-      setActiveMode(mode);
-    });
   });
 
   popupClose.addEventListener("click", () => {
@@ -230,7 +282,7 @@
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
       pasteBtn.classList.remove('redirecting');
-      pasteBtn.innerHTML = '<i class="bi bi-clipboard"></i> Paste';
+      pasteBtn.innerHTML = '<i class="bi bi-clipboard"></i> Paste & Search';
       pasteBtn.disabled = false;
       searchBtn.disabled = false;
       isRedirecting = false;
@@ -244,11 +296,6 @@
       if (!isRedirecting) {
         pasteBtn.click();
       }
-    }
-    if (!isRedirecting) {
-      if (e.key === '1') setActiveMode('hour');
-      else if (e.key === '2') setActiveMode('today');
-      else if (e.key === '3') setActiveMode('normal');
     }
   });
 })();
