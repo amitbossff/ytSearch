@@ -1,148 +1,248 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <title>AmitTG</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video comunication</title>
+
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a0a1a">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="style.css">
+
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="dns-prefetch" href="https://www.youtube.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Inter',sans-serif;
+    background: radial-gradient(circle at top,#1a0d00,#000000 70%);
+    opacity:0;
+    transition:opacity .4s ease;
+}
+.title-font{ font-family:'Anton',sans-serif; }
+</style>
 </head>
-<body>
-  <div class="mesh-bg"></div>
-  <div class="floating-particles">
-    <span style="left: 10%; animation-delay: 0s;"></span>
-    <span style="left: 30%; animation-delay: 2s;"></span>
-    <span style="left: 50%; animation-delay: 5s;"></span>
-    <span style="left: 70%; animation-delay: 1s;"></span>
-    <span style="left: 90%; animation-delay: 4s;"></span>
-  </div>
 
-  <div class="container">
-    <div class="app-card">
-      <!-- Modern Header - Without Settings and History buttons -->
-      <div class="app-header">
-        <div class="logo-area">
-          <div class="logo-icon">
-            <i class="bi bi-youtube"></i>
-          </div>
-          <span class="logo-text">Radhe Radhe</span>
-        </div>
-       
-      </div>
+<body class="min-h-screen flex items-center justify-center text-white p-4">
 
-      
-      <div class="stats-modern">
-        <div class="stats-modern-left">
-          <div class="stats-modern-icon">
-            <i class="bi bi-search-heart"></i>
-          </div>
-          <div class="stats-modern-info">
-            <h4>TODAY'S SEARCHES</h4>
-            <span class="stats-modern-number" id="dailyCount">0</span>
-          </div>
-        </div>
-        <div class="stats-modern-badge" id="resetTime">
-          <i class="bi bi-arrow-repeat"></i>
-          <span>Resets at 12am</span>
-        </div>
-      </div>
+<div class="w-full max-w-xl glass p-10 rounded-3xl shadow-2xl text-center backdrop-blur-xl border border-orange-500/20">
 
-     
-      <div class="search-modern">
-        <div class="search-modern-box">
-          <span class="search-modern-icon">
-            <i class="bi bi-link-45deg"></i>
-          </span>
-          <input
-            type="text"
+    <h1 data-aos="zoom-in"
+        class="title-font text-6xl tracking-widest mb-6 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent">
+        Radhe Radhe 
+    </h1>
+
+    
+    <div class="flex justify-center mb-6 gap-2" data-aos="fade-up">
+        <button id="modeHour" class="btn btn-sm btn-warning rounded-full">
+            Last Hour
+        </button>
+        <button id="modeToday" class="btn btn-sm btn-outline btn-warning rounded-full">
+            Today
+        </button>
+    </div>
+
+    
+    <div class="flex mb-6" data-aos="fade-up">
+        <input 
             id="searchBox"
-            placeholder="Paste search tag..."
-            autocomplete="off"
-            spellcheck="false"
-          >
-        </div>
-        <button class="clear-modern hidden" id="clearBtn" title="Clear">
-          <i class="bi bi-x-lg"></i>
+            type="text"
+            placeholder="Paste here..."
+            class="input input-bordered w-full rounded-l-full bg-white/10 focus:border-orange-500 focus:outline-none"
+        >
+        <button 
+            id="pasteBtn"
+            class="btn rounded-r-full bg-gradient-to-r from-blue-500 to-blue-700 border-none active:scale-95 transition"
+        >
+            <i class="bi bi-clipboard text-xl"></i>
         </button>
-      </div>
-
-     
-      <div class="action-grid">
-        <button class="action-btn-primary" id="pasteBtn">
-          <i class="bi bi-clipboard"></i>
-          Paste Directly
-        </button>
-        <button class="action-btn-secondary" id="searchBtn" title="Search">
-          <i class="bi bi-search"></i>
-        </button>
-      </div>
-
-      
-      <div class="mode-selector-modern">
-        <div class="mode-selector-trigger" id="modeSelectorBtn">
-          <div class="mode-trigger-left">
-            <i class="bi bi-funnel"></i>
-            <span>Search Filter</span>
-          </div>
-          <div class="mode-trigger-right">
-            <span class="current-mode-chip" id="currentModeText"> Last Hour</span>
-            <i class="bi bi-chevron-down" id="dropdownArrow"></i>
-          </div>
-        </div>
-
-        <div class="mode-dropdown-modern" id="modeDropdown">
-          <button class="mode-item selected" data-mode="hour">
-            <div class="mode-item-icon"><i class="bi bi-clock"></i></div>
-            <span class="mode-item-text">Last Hour</span>
-            <span class="mode-item-badge">Recent</span>
-          </button>
-          <button class="mode-item" data-mode="today">
-            <div class="mode-item-icon"><i class="bi bi-calendar-day"></i></div>
-            <span class="mode-item-text">Today</span>
-            <span class="mode-item-badge">24h</span>
-          </button>
-          <button class="mode-item" data-mode="normal">
-            <div class="mode-item-icon"><i class="bi bi-globe"></i></div>
-            <span class="mode-item-text">All Time</span>
-            <span class="mode-item-badge">Everything</span>
-          </button>
-        </div>
-      </div>
-
-     
-      <div class="app-footer">
-        Regards • Video Trade 
-      </div>
     </div>
-  </div>
 
-  <div class="popup-overlay" id="popupOverlay">
-    <div class="popup-modern">
-      <button class="popup-close" id="popupClose">✕</button>
-      <h3>
-        <i class="bi bi-exclamation-triangle"></i> 
-        Clipboard Access
-      </h3>
-      <div class="popup-content">
-        <p>Paste feature not supported</p>
-        
-        <div class="popup-steps">
-          <ol>
-            <li>Use <strong>Chrome</strong>, <strong>Edge</strong>, or <strong>Safari</strong></li>
-            <li>Add to home screen</li>
-            <li>Install our app</li>
-          </ol>
-        </div>
+    <button id="redirectBtn"
+        class="btn hidden rounded-full bg-gradient-to-r from-orange-500 to-red-500 border-none animate-pulse">
+        <span class="loading loading-spinner"></span>
+        Searching...
+    </button>
 
-        <div class="popup-note">
-          <i class="bi bi-pencil-square"></i> Type manually in search box
+    <div class="mt-6 text-sm opacity-80">
+        Today Searches:
+        <span id="dailyCount" class="text-orange-400 font-bold text-lg">0</span>
+
+        <div id="countdown" class="text-xs mt-1 text-gray-400"></div>
+
+        <div class="mt-2 text-gray-500 text-xs">
+            • Radhe Radhe •
         </div>
-      </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+</div>
+
+<div id="toast" class="toast toast-top toast-end hidden">
+    <div class="alert alert-warning">
+        <span>Clipboard permission denied.</span>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+
+<script>
+window.addEventListener("load",()=>{
+    document.body.style.opacity="1";
+    if(typeof AOS!=="undefined"){ AOS.init({duration:600,once:true}); }
+});
+</script>
+
+<script>
+(function(){
+
+const searchBox = document.getElementById("searchBox");
+const pasteBtn = document.getElementById("pasteBtn");
+const redirectBtn = document.getElementById("redirectBtn");
+const dailyCount = document.getElementById("dailyCount");
+const countdown = document.getElementById("countdown");
+const toast = document.getElementById("toast");
+
+const modeHour = document.getElementById("modeHour");
+const modeToday = document.getElementById("modeToday");
+
+const filters = {
+    hour:"EgIIAQ%3D%3D",
+    today:"EgIIAg%3D%3D"
+};
+
+let currentMode = localStorage.getItem("videoTradeMode") || "hour";
+let redirecting = false;
+
+
+function updateModeUI(){
+    if(currentMode==="hour"){
+        modeHour.classList.remove("btn-outline");
+        modeHour.classList.add("btn-warning");
+        modeToday.classList.add("btn-outline");
+    }else{
+        modeToday.classList.remove("btn-outline");
+        modeToday.classList.add("btn-warning");
+        modeHour.classList.add("btn-outline");
+    }
+}
+updateModeUI();
+
+modeHour.onclick=()=>{
+    currentMode="hour";
+    localStorage.setItem("videoTradeMode","hour");
+    updateModeUI();
+};
+modeToday.onclick=()=>{
+    currentMode="today";
+    localStorage.setItem("videoTradeMode","today");
+    updateModeUI();
+};
+
+
+function getMidnight(){
+    const now=new Date();
+    return new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+}
+function getNextMidnight(){
+    const now=new Date();
+    return new Date(now.getFullYear(),now.getMonth(),now.getDate()+1).getTime();
+}
+function getData(){
+    return JSON.parse(localStorage.getItem("videoTradePro"))||{};
+}
+function saveData(data){
+    localStorage.setItem("videoTradePro",JSON.stringify(data));
+}
+function checkReset(){
+    const todayMidnight=getMidnight();
+    let data=getData();
+    if(!data.lastReset||data.lastReset!==todayMidnight){
+        data={count:0,lastReset:todayMidnight};
+        saveData(data);
+    }
+}
+function increase(){
+    checkReset();
+    let data=getData();
+    data.count++;
+    saveData(data);
+    dailyCount.textContent=data.count;
+}
+function loadCount(){
+    checkReset();
+    dailyCount.textContent=getData().count||0;
+}
+loadCount();
+
+function updateCountdown(){
+    const diff=getNextMidnight()-Date.now();
+    const h=Math.floor(diff/1000/60/60);
+    const m=Math.floor(diff/1000/60)%60;
+    const s=Math.floor(diff/1000)%60;
+    countdown.textContent=`Reset in ${h}h ${m}m ${s}s`;
+}
+setInterval(updateCountdown,1000);
+updateCountdown();
+
+function search(query){
+    if(!query||redirecting)return;
+    redirecting=true;
+    redirectBtn.classList.remove("hidden");
+    increase();
+
+    const encoded=encodeURIComponent(query);
+    const url=`https://www.youtube.com/results?search_query=${encoded}&sp=${filters[currentMode]}`;
+
+    searchBox.value="";
+    setTimeout(()=>location.replace(url),500);
+}
+
+searchBox.addEventListener("input",()=>{
+    if(searchBox.value.trim().length>=1){
+        search(searchBox.value.trim());
+    }
+});
+
+pasteBtn.addEventListener("click",async()=>{
+    try{
+        const text=await navigator.clipboard.readText();
+        if(text){
+            searchBox.value=text.trim();
+            search(text.trim());
+        }
+    }catch{
+        toast.classList.remove("hidden");
+        setTimeout(()=>toast.classList.add("hidden"),3000);
+    }
+});
+
+document.addEventListener("visibilitychange",()=>{
+    if(!document.hidden){
+        redirecting=false;
+        redirectBtn.classList.add("hidden");
+        searchBox.value="";
+        loadCount();
+    }
+});
+
+})();
+</script>
+
+<script>
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(console.error);
+  });
+}
+
+</script>
+
 </body>
 </html>
