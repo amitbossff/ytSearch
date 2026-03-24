@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>YouTube Search Tool</title>
+  
+    <script src="https://cdn.tailwindcss.com"></script>
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .btn-outline:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .btn-warning:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+        }
+        button, a {
+            transition: all 0.2s ease;
+        }
+        button:active, a:active {
+            transform: scale(0.96);
+        }
+        
+        
+        body.dark-mode {
+            background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+        }
+        body.dark-mode .bg-white,
+        body.dark-mode .bg-white\/95,
+        body.dark-mode .bg-gray-50,
+        body.dark-mode .bg-gradient-to-r.from-gray-50,
+        body.dark-mode .bg-gradient-to-br.from-gray-100 {
+            background-color: #1f2937 !important;
+            background-image: none !important;
+            border-color: #374151 !important;
+        }
+        body.dark-mode .bg-gray-100 {
+            background-color: #374151 !important;
+        }
+        body.dark-mode .text-gray-900,
+        body.dark-mode .text-gray-800,
+        body.dark-mode .text-gray-700 {
+            color: #f3f4f6 !important;
+        }
+        body.dark-mode .text-gray-500,
+        body.dark-mode .text-gray-400,
+        body.dark-mode .text-gray-600 {
+            color: #9ca3af !important;
+        }
+        body.dark-mode .border-gray-200,
+        body.dark-mode .border-gray-100 {
+            border-color: #374151 !important;
+        }
+        body.dark-mode .bg-gray-50 {
+            background-color: #1f2937 !important;
+        }
+        body.dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        body.dark-mode .shadow-sm,
+        body.dark-mode .shadow-lg {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+        }
+        body.dark-mode .bg-gradient-to-r.from-gray-50.to-gray-100 {
+            background: linear-gradient(to right, #1f2937, #111827) !important;
+        }
+        body.dark-mode .bg-white\/95 {
+            background-color: rgba(31, 41, 55, 0.95) !important;
+        }
+        body.dark-mode .btn-outline {
+            border-color: #4b5563;
+            color: #9ca3af;
+        }
+        body.dark-mode .btn-outline:hover {
+            background: #374151;
+            border-color: #6b7280;
+        }
+        body.dark-mode input {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f3f4f6 !important;
+        }
+        body.dark-mode input::placeholder {
+            color: #9ca3af !important;
+        }
+        body.dark-mode input:focus {
+            border-color: #ef4444 !important;
+            ring-color: #ef4444 !important;
+        }
+        .transition-colors {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen pb-6 transition-colors">
+
+    
+    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm transition-colors">
+        <div class="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center shadow-lg shadow-red-200">
+                    <i class="bi bi-youtube text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-gray-900 leading-tight">Radhe Radhe</h1>
+                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">YouTube Search Tool</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-1 rounded-full inline-flex items-center gap-1 transition-colors">
+                    <i class="bi bi-calendar3 text-xs"></i>
+                    <span id="dailyCount">0</span> today
+                </span>
+                
+                <button id="themeToggle" class="w-8 h-8 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-200 flex items-center justify-center">
+                    <i id="themeIcon" class="bi bi-moon-stars text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    
+    <main class="max-w-lg mx-auto px-4 pt-20 space-y-5 animate-fade-in">
+        
+        
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 transition-colors">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold text-gray-800">Search Mode</h3>
+                <span class="text-[10px] text-gray-400">Filter results</span>
+            </div>
+            <div class="flex gap-3">
+                <button id="modeHour" class="flex-1 py-3 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 btn-warning">
+                    <i class="bi bi-clock-history text-base"></i>
+                    <span>Last Hour</span>
+                </button>
+                <button id="modeToday" class="flex-1 py-3 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 btn-outline">
+                    <i class="bi bi-calendar-day text-base"></i>
+                    <span>Today</span>
+                </button>
+            </div>
+        </div>
+
+      
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4 transition-colors">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="bi bi-youtube text-red-500 text-xl"></i>
+                <h3 class="text-sm font-bold text-gray-800">Search</h3>
+            </div>
+            
+            
+            <div class="flex gap-2">
+                <div class="flex-1 relative">
+                    <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" id="searchBox" 
+                        class="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200 transition-all duration-200 text-sm"
+                        placeholder="Paste text here...">
+                </div>
+                <button id="pasteBtn" class="px-4 py-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-200 active:scale-95 shadow-sm">
+                    <i class="bi bi-clipboard text-gray-600 text-lg"></i>
+                </button>
+            </div>
+            
+            <p class="text-[11px] text-gray-400 flex items-center gap-1">
+                <i class="bi bi-info-circle-fill text-xs"></i>
+                Auto-redirects to YouTube after typing (3+ characters)
+            </p>
+            
+            
+            <div id="redirectBtn" class="hidden mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center gap-3 animate-fade-in">
+                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                    <i class="bi bi-arrow-repeat text-amber-600 animate-spin text-sm"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-semibold text-amber-700">Redirecting...</p>
+                    <p class="text-xs text-amber-600">Opening YouTube with your search</p>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 border border-gray-200 transition-colors">
+            <div class="flex items-center gap-2 mb-3">
+                <i class="bi bi-lightbulb text-amber-500 text-lg"></i>
+                <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wide">Tips</h4>
+            </div>
+            <div class="space-y-2 text-xs text-gray-600">
+                <div class="flex items-start gap-2">
+                    <i class="bi bi-clipboard-check text-green-500 mt-0.5"></i>
+                    <span>Paste any YouTube video title - auto extracts search term</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <i class="bi bi-funnel text-purple-500 mt-0.5"></i>
+                    <span>"Last Hour" mode shows recent uploads, "Today" shows today's videos</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <i class="bi bi-graph-up text-blue-500 mt-0.5"></i>
+                    <span>Daily counter resets at midnight • Searches automatically redirect</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+    <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+        <div class="bg-gray-900 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm">
+            <i class="bi bi-exclamation-triangle-fill text-amber-400"></i>
+            <span>Unable to paste. Allow clipboard access!</span>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+      
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = document.getElementById("themeIcon");
+        
+      
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") {
+            document.body.classList.add("dark-mode");
+            themeIcon.classList.remove("bi-moon-stars");
+            themeIcon.classList.add("bi-sun");
+        }
+        
+    
+        function toggleTheme() {
+            if (document.body.classList.contains("dark-mode")) {
+                document.body.classList.remove("dark-mode");
+                localStorage.setItem("theme", "light");
+                themeIcon.classList.remove("bi-sun");
+                themeIcon.classList.add("bi-moon-stars");
+            } else {
+                document.body.classList.add("dark-mode");
+                localStorage.setItem("theme", "dark");
+                themeIcon.classList.remove("bi-moon-stars");
+                themeIcon.classList.add("bi-sun");
+            }
+        }
+        
+        themeToggle.addEventListener("click", toggleTheme);
+        
+      
+        const searchBox = document.getElementById("searchBox");
+        const pasteBtn = document.getElementById("pasteBtn");
+        const redirectBtn = document.getElementById("redirectBtn");
+        const dailyCount = document.getElementById("dailyCount");
+        const modeHour = document.getElementById("modeHour");
+        const modeToday = document.getElementById("modeToday");
+        const toast = document.getElementById("toast");
+        
+      
+        const filters = { 
+            hour: "EgIIAQ%3D%3D", 
+            today: "EgIIAg%3D%3D"
+        };
+        
+        let currentMode = localStorage.getItem("videoTradeMode") || "hour";
+        let redirecting = false;
+        
+    
+        function updateModeUI() {
+            if (currentMode === "hour") {
+                modeHour.classList.remove("btn-outline");
+                modeHour.classList.add("btn-warning");
+                modeToday.classList.remove("btn-warning");
+                modeToday.classList.add("btn-outline");
+            } else {
+                modeToday.classList.remove("btn-outline");
+                modeToday.classList.add("btn-warning");
+                modeHour.classList.remove("btn-warning");
+                modeHour.classList.add("btn-outline");
+            }
+        }
+        updateModeUI();
+        
+      
+        modeHour.onclick = () => {
+            currentMode = "hour";
+            localStorage.setItem("videoTradeMode", "hour");
+            updateModeUI();
+        };
+        modeToday.onclick = () => {
+            currentMode = "today";
+            localStorage.setItem("videoTradeMode", "today");
+            updateModeUI();
+        };
+        
+      
+        function getMidnight() {
+            const now = new Date();
+            return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        }
+        
+        function getData() {
+            return JSON.parse(localStorage.getItem("videoTradePro")) || {};
+        }
+        
+        function saveData(data) {
+            localStorage.setItem("videoTradePro", JSON.stringify(data));
+        }
+        
+        function checkReset() {
+            const todayMidnight = getMidnight();
+            let data = getData();
+            if (!data.lastReset || data.lastReset !== todayMidnight) {
+                data = { count: 0, lastReset: todayMidnight };
+                saveData(data);
+            }
+        }
+        
+        function increase() {
+            checkReset();
+            let data = getData();
+            data.count++;
+            saveData(data);
+            if (dailyCount) dailyCount.textContent = data.count;
+        }
+        
+        function loadCount() {
+            checkReset();
+            const count = getData().count || 0;
+            if (dailyCount) dailyCount.textContent = count;
+        }
+        loadCount();
+        
+        function search(query) {
+            if (!query || redirecting) return;
+            redirecting = true;
+            if (redirectBtn) redirectBtn.classList.remove("hidden");
+            increase();
+            
+            const encoded = encodeURIComponent(query.trim());
+            const url = `https://www.youtube.com/results?search_query=${encoded}&sp=${filters[currentMode]}`;
+            
+            if (searchBox) searchBox.value = "";
+            setTimeout(() => {
+                location.replace(url);
+            }, 500);
+        }
+        
+      
+        if (searchBox) {
+            searchBox.addEventListener("input", () => {
+                const val = searchBox.value.trim();
+                if (val.length >= 3) {
+                    search(val);
+                }
+            });
+        }
+        
+    
+        if (pasteBtn) {
+            pasteBtn.addEventListener("click", async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (text && text.trim()) {
+                        if (searchBox) searchBox.value = text.trim();
+                        if (text.trim().length >= 3) {
+                            search(text.trim());
+                        }
+                    } else {
+                        if (toast) {
+                            toast.classList.remove("hidden");
+                            setTimeout(() => toast.classList.add("hidden"), 3000);
+                        }
+                    }
+                } catch (err) {
+                    if (toast) {
+                        toast.classList.remove("hidden");
+                        setTimeout(() => toast.classList.add("hidden"), 3000);
+                    }
+                }
+            });
+        }
+        
+      
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) {
+                redirecting = false;
+                if (redirectBtn) redirectBtn.classList.add("hidden");
+                if (searchBox) searchBox.value = "";
+                loadCount();
+            }
+        });
+        
+      
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('touchstart', function() {
+                if (!this.disabled) {
+                    this.style.transform = 'scale(0.96)';
+                }
+            });
+            el.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+            el.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+    })();
+    </script>
+    
+    <script>
+    if ("serviceWorker" in navigator) { 
+        window.addEventListener("load", () => { 
+            navigator.serviceWorker.register("sw.js").catch(console.error);
+        });
+    }
+    </script>
+</body>
+</html>
