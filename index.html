@@ -2,431 +2,586 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YouTube Search Tool</title>
-  
     <script src="https://cdn.tailwindcss.com"></script>
-  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+      
+        @keyframes floatSubtle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes rippleZoom {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out;
+        @keyframes gentlePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
         }
-        .btn-outline {
-            background: transparent;
+        
+      
+        .particle {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: floatParticle 20s linear infinite;
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        
+      
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+      
+        .glass-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        body.dark-mode .glass-card {
+            background: rgba(15, 25, 45, 0.94);
+            border-color: rgba(255,255,255,0.08);
+        }
+        
+     
+        .input-compact {
+            background: #ffffffdd;
             border: 1px solid #e2e8f0;
-            color: #64748b;
+            transition: all 0.25s ease;
+            border-radius: 60px;
+            padding: 0.7rem 1rem 0.7rem 2.8rem;
+            font-size: 0.95rem;
+            width: 100%;
+            backdrop-filter: blur(4px);
         }
-        .btn-outline:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
+        body.dark-mode .input-compact {
+            background: #1e293bcc;
+            border-color: #475569;
+            color: #f8fafc;
         }
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        .input-compact:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
+            outline: none;
+            background: white;
         }
-        .btn-warning:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+        body.dark-mode .input-compact:focus {
+            background: #0f172a;
+            border-color: #f97316;
         }
-        button, a {
+        
+      
+        .mode-btn {
             transition: all 0.2s ease;
+            border-radius: 40px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            backdrop-filter: blur(4px);
         }
-        button:active, a:active {
-            transform: scale(0.96);
+        .mode-btn-active {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+            box-shadow: 0 8px 18px -6px rgba(249,115,22,0.5);
+            border: none;
+        }
+        .mode-btn-inactive {
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(203,213,225,0.8);
+            color: #334155;
+        }
+        body.dark-mode .mode-btn-inactive {
+            background: rgba(30,41,59,0.7);
+            border-color: #475569;
+            color: #cbd5e1;
         }
         
+     
+        .stat-badge {
+            background: linear-gradient(105deg, #fff8e7, #ffedd5);
+            border-radius: 32px;
+            padding: 6px 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+        body.dark-mode .stat-badge {
+            background: linear-gradient(105deg, #2d2a1f, #1f1a2e);
+        }
         
-        body.dark-mode {
-            background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+     
+        .toast-custom {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: #1e293bdd;
+            backdrop-filter: blur(16px);
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: 500;
+            transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+            z-index: 1500;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
         }
-        body.dark-mode .bg-white,
-        body.dark-mode .bg-white\/95,
-        body.dark-mode .bg-gray-50,
-        body.dark-mode .bg-gradient-to-r.from-gray-50,
-        body.dark-mode .bg-gradient-to-br.from-gray-100 {
-            background-color: #1f2937 !important;
-            background-image: none !important;
-            border-color: #374151 !important;
+        .toast-custom.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+            pointer-events: auto;
         }
-        body.dark-mode .bg-gray-100 {
-            background-color: #374151 !important;
+        
+     
+        .theme-toggle-new {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 200;
+            border: 1px solid rgba(255,255,255,0.4);
+            transition: all 0.2s;
         }
-        body.dark-mode .text-gray-900,
-        body.dark-mode .text-gray-800,
-        body.dark-mode .text-gray-700 {
-            color: #f3f4f6 !important;
+        .theme-toggle-new:active { transform: scale(0.92); }
+        
+        .hero-emoji {
+            font-size: 2rem;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+            animation: floatSubtle 3s infinite;
         }
-        body.dark-mode .text-gray-500,
-        body.dark-mode .text-gray-400,
-        body.dark-mode .text-gray-600 {
-            color: #9ca3af !important;
+        
+      
+        .confetti-piece-new {
+            position: fixed;
+            width: 10px;
+            height: 14px;
+            background: #f97316;
+            pointer-events: none;
+            z-index: 2000;
+            opacity: 0.8;
+            animation: confettiFall 1.8s forwards ease-out;
         }
-        body.dark-mode .border-gray-200,
-        body.dark-mode .border-gray-100 {
-            border-color: #374151 !important;
+        @keyframes confettiFall {
+            0% { transform: translateY(-20vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(500deg); opacity: 0; }
         }
-        body.dark-mode .bg-gray-50 {
-            background-color: #1f2937 !important;
+        
+        .btn-radhe {
+            background: linear-gradient(95deg, #f97316, #dc2626);
+            transition: 0.2s;
+            box-shadow: 0 10px 18px -8px rgba(249,115,22,0.4);
         }
-        body.dark-mode .border-gray-200 {
-            border-color: #374151 !important;
+        .btn-radhe:active { transform: scale(0.96); }
+        
+        .wider-card {
+            max-width: 500px;
+            width: 100%;
         }
-        body.dark-mode .shadow-sm,
-        body.dark-mode .shadow-lg {
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
-        }
-        body.dark-mode .bg-gradient-to-r.from-gray-50.to-gray-100 {
-            background: linear-gradient(to right, #1f2937, #111827) !important;
-        }
-        body.dark-mode .bg-white\/95 {
-            background-color: rgba(31, 41, 55, 0.95) !important;
-        }
-        body.dark-mode .btn-outline {
-            border-color: #4b5563;
-            color: #9ca3af;
-        }
-        body.dark-mode .btn-outline:hover {
-            background: #374151;
-            border-color: #6b7280;
-        }
-        body.dark-mode input {
-            background-color: #374151 !important;
-            border-color: #4b5563 !important;
-            color: #f3f4f6 !important;
-        }
-        body.dark-mode input::placeholder {
-            color: #9ca3af !important;
-        }
-        body.dark-mode input:focus {
-            border-color: #ef4444 !important;
-            ring-color: #ef4444 !important;
-        }
-        .transition-colors {
-            transition: all 0.3s ease;
+        
+        @media (max-width: 480px) {
+            .wider-card { max-width: 94%; }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen pb-6 transition-colors">
-
+<body class="min-h-screen flex items-center justify-center p-4 antialiased relative font-sans">
     
-    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-gray-200 z-50 shadow-sm transition-colors">
-        <div class="max-w-lg mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center shadow-lg shadow-red-200">
-                    <i class="bi bi-youtube text-white text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg text-gray-900 leading-tight">Radhe Radhe</h1>
-                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">YouTube Search Tool</p>
+  
+    <div class="animated-bg"></div>
+    
+    <div id="particles"></div>
+    
+  
+    <div class="theme-toggle-new" id="themeToggleBtn">
+        <i id="themeIconNew" class="bi bi-moon-fill text-white text-xl"></i>
+    </div>
+    
+    <div class="wider-card mx-auto relative z-10 animate-[fadeSlideUp_0.5s_ease-out]">
+        <div class="glass-card rounded-3xl shadow-2xl overflow-hidden transition-all duration-300">
+            
+          
+            <div class="relative px-5 pt-5 pb-3 text-center bg-gradient-to-r from-orange-600 to-rose-700 text-white">
+                <div class="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+                <div class="relative flex flex-col items-center gap-1">
+                    
+                    <h2 class="text-2xl font-extrabold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-pink-100">Radhe Radhe</h2>
+                    <p class="text-[11px] font-medium text-orange-100">AmitTG</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] text-gray-400 bg-gray-100 px-2 py-1 rounded-full inline-flex items-center gap-1 transition-colors">
-                    <i class="bi bi-calendar3 text-xs"></i>
-                    <span id="dailyCount">0</span> today
-                </span>
+            
+            <div class="p-5 md:p-6">
                 
-                <button id="themeToggle" class="w-8 h-8 rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all duration-200 flex items-center justify-center">
-                    <i id="themeIcon" class="bi bi-moon-stars text-sm"></i>
-                </button>
+            
+                <div class="mb-5 flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                            <i class="bi bi-funnel-fill text-orange-500"></i> <span>Filter mode</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 justify-center mt-1">
+                        <button id="modeHourBtn" class="mode-btn mode-btn-active px-7 py-2 text-sm flex items-center gap-1"><i class="bi bi-hourglass-split"></i> Last Hour</button>
+                        <button id="modeTodayBtn" class="mode-btn mode-btn-inactive px-7 py-2 text-sm flex items-center gap-1"><i class="bi bi-calendar-day"></i> Today</button>
+                    </div>
+                </div>
+                
+              
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-1"><i class="bi bi-search-heart text-rose-500"></i> Search YouTube</label>
+                        <button id="pasteBtnNew" class="bg-indigo-500/90 hover:bg-indigo-600 text-white text-[11px] px-4 py-1.5 rounded-full shadow-md flex items-center gap-1 transition-all active:scale-95 backdrop-blur-sm">
+                            <i class="bi bi-clipboard-plus text-xs"></i> Paste
+                        </button>
+                    </div>
+                    
+                    <div class="relative group">
+                        <i class="bi bi-youtube absolute left-4 top-1/2 -translate-y-1/2 text-red-500 text-lg z-10"></i>
+                        <input type="text" id="searchInputField" placeholder="Search anything... (min 3 letters)" 
+                               class="input-compact w-full pl-11 pr-4 py-3 text-sm rounded-full shadow-sm border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-orange-400 transition-all">
+                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-xs pointer-events-none">
+                            <i class="bi bi-arrow-return-left"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="redirectHint" class="hidden mt-3 text-center text-[11px] font-medium bg-orange-50 dark:bg-orange-950/40 py-2 rounded-full text-orange-700 dark:text-orange-300 animate-pulse">
+                        <i class="bi bi-box-arrow-up-right mr-1"></i> Redirecting to YouTube...
+                    </div>
+                </div>
+                
+              
+                <div class="grid grid-cols-2 gap-3 mt-2">
+                    <div class="stat-badge flex items-center justify-between px-4 py-2.5 rounded-2xl">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-graph-up text-amber-600 dark:text-amber-400 text-base"></i>
+                            <span class="text-xs font-medium text-gray-600 dark:text-gray-300">Today's </span>
+                        </div>
+                        <span id="dailyCounter" class="text-2xl font-black text-orange-600 dark:text-orange-400">0</span>
+                    </div>
+                    <div class="stat-badge flex items-center justify-between px-4 py-2.5 rounded-2xl">
+                        <div class="flex items-center gap-2">
+                            <i class="bi bi-lightning-charge text-amber-600 dark:text-amber-400 text-base"></i>
+                            <span class="text-xs font-medium text-gray-600 dark:text-gray-300">Current Mode</span>
+                        </div>
+                        <span id="modeIndicator" class="text-xs font-bold bg-orange-100 dark:bg-orange-900/50 px-3 py-1 rounded-full">Hour</span>
+                    </div>
+                </div>
+                
+                <!-- Footer section removed completely -->
             </div>
         </div>
-    </header>
-
+    </div>
     
-    <main class="max-w-lg mx-auto px-4 pt-20 space-y-5 animate-fade-in">
-        
-        
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 transition-colors">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-bold text-gray-800">Search Mode</h3>
-                <span class="text-[10px] text-gray-400">Filter results</span>
-            </div>
-            <div class="flex gap-3">
-                <button id="modeHour" class="flex-1 py-3 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 btn-warning">
-                    <i class="bi bi-clock-history text-base"></i>
-                    <span>Last Hour</span>
-                </button>
-                <button id="modeToday" class="flex-1 py-3 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-2 btn-outline">
-                    <i class="bi bi-calendar-day text-base"></i>
-                    <span>Today</span>
-                </button>
-            </div>
-        </div>
-
-      
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 space-y-4 transition-colors">
-            <div class="flex items-center gap-2 mb-2">
-                <i class="bi bi-youtube text-red-500 text-xl"></i>
-                <h3 class="text-sm font-bold text-gray-800">Search</h3>
-            </div>
-            
-            
-            <div class="flex gap-2">
-                <div class="flex-1 relative">
-                    <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                    <input type="text" id="searchBox" 
-                        class="w-full pl-9 pr-3 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200 transition-all duration-200 text-sm"
-                        placeholder="Paste text here...">
-                </div>
-                <button id="pasteBtn" class="px-4 py-3 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-200 active:scale-95 shadow-sm">
-                    <i class="bi bi-clipboard text-gray-600 text-lg"></i>
-                </button>
-            </div>
-            
-            <p class="text-[11px] text-gray-400 flex items-center gap-1">
-                <i class="bi bi-info-circle-fill text-xs"></i>
-                Auto-redirects to YouTube after typing (3+ characters)
-            </p>
-            
-            
-            <div id="redirectBtn" class="hidden mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center gap-3 animate-fade-in">
-                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
-                    <i class="bi bi-arrow-repeat text-amber-600 animate-spin text-sm"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-semibold text-amber-700">Redirecting...</p>
-                    <p class="text-xs text-amber-600">Opening YouTube with your search</p>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 border border-gray-200 transition-colors">
-            <div class="flex items-center gap-2 mb-3">
-                <i class="bi bi-lightbulb text-amber-500 text-lg"></i>
-                <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wide">Tips</h4>
-            </div>
-            <div class="space-y-2 text-xs text-gray-600">
-                <div class="flex items-start gap-2">
-                    <i class="bi bi-clipboard-check text-green-500 mt-0.5"></i>
-                    <span>Paste any YouTube video title - auto extracts search term</span>
-                </div>
-                <div class="flex items-start gap-2">
-                    <i class="bi bi-funnel text-purple-500 mt-0.5"></i>
-                    <span>"Last Hour" mode shows recent uploads, "Today" shows today's videos</span>
-                </div>
-                <div class="flex items-start gap-2">
-                    <i class="bi bi-graph-up text-blue-500 mt-0.5"></i>
-                    <span>Daily counter resets at midnight • Searches automatically redirect</span>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    
-    <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
-        <div class="bg-gray-900 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm">
-            <i class="bi bi-exclamation-triangle-fill text-amber-400"></i>
-            <span>Unable to paste. Allow clipboard access!</span>
-        </div>
+    <div id="globalToast" class="toast-custom">
+        <i class="bi bi-clipboard-x mr-2"></i> <span id="toastMsg">Clipboard is empty</span>
     </div>
 
     <script>
-    (function() {
-      
-        const themeToggle = document.getElementById("themeToggle");
-        const themeIcon = document.getElementById("themeIcon");
-        
-      
-        const savedTheme = localStorage.getItem("theme") || "light";
-        if (savedTheme === "dark") {
-            document.body.classList.add("dark-mode");
-            themeIcon.classList.remove("bi-moon-stars");
-            themeIcon.classList.add("bi-sun");
-        }
-        
-    
-        function toggleTheme() {
-            if (document.body.classList.contains("dark-mode")) {
-                document.body.classList.remove("dark-mode");
-                localStorage.setItem("theme", "light");
-                themeIcon.classList.remove("bi-sun");
-                themeIcon.classList.add("bi-moon-stars");
-            } else {
-                document.body.classList.add("dark-mode");
-                localStorage.setItem("theme", "dark");
-                themeIcon.classList.remove("bi-moon-stars");
-                themeIcon.classList.add("bi-sun");
-            }
-        }
-        
-        themeToggle.addEventListener("click", toggleTheme);
-        
-      
-        const searchBox = document.getElementById("searchBox");
-        const pasteBtn = document.getElementById("pasteBtn");
-        const redirectBtn = document.getElementById("redirectBtn");
-        const dailyCount = document.getElementById("dailyCount");
-        const modeHour = document.getElementById("modeHour");
-        const modeToday = document.getElementById("modeToday");
-        const toast = document.getElementById("toast");
-        
-      
-        const filters = { 
-            hour: "EgIIAQ%3D%3D", 
-            today: "EgIIAg%3D%3D"
-        };
-        
-        let currentMode = localStorage.getItem("videoTradeMode") || "hour";
-        let redirecting = false;
-        
-    
-        function updateModeUI() {
-            if (currentMode === "hour") {
-                modeHour.classList.remove("btn-outline");
-                modeHour.classList.add("btn-warning");
-                modeToday.classList.remove("btn-warning");
-                modeToday.classList.add("btn-outline");
-            } else {
-                modeToday.classList.remove("btn-outline");
-                modeToday.classList.add("btn-warning");
-                modeHour.classList.remove("btn-warning");
-                modeHour.classList.add("btn-outline");
-            }
-        }
-        updateModeUI();
-        
-      
-        modeHour.onclick = () => {
-            currentMode = "hour";
-            localStorage.setItem("videoTradeMode", "hour");
-            updateModeUI();
-        };
-        modeToday.onclick = () => {
-            currentMode = "today";
-            localStorage.setItem("videoTradeMode", "today");
-            updateModeUI();
-        };
-        
-      
-        function getMidnight() {
-            const now = new Date();
-            return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        }
-        
-        function getData() {
-            return JSON.parse(localStorage.getItem("videoTradePro")) || {};
-        }
-        
-        function saveData(data) {
-            localStorage.setItem("videoTradePro", JSON.stringify(data));
-        }
-        
-        function checkReset() {
-            const todayMidnight = getMidnight();
-            let data = getData();
-            if (!data.lastReset || data.lastReset !== todayMidnight) {
-                data = { count: 0, lastReset: todayMidnight };
-                saveData(data);
-            }
-        }
-        
-        function increase() {
-            checkReset();
-            let data = getData();
-            data.count++;
-            saveData(data);
-            if (dailyCount) dailyCount.textContent = data.count;
-        }
-        
-        function loadCount() {
-            checkReset();
-            const count = getData().count || 0;
-            if (dailyCount) dailyCount.textContent = count;
-        }
-        loadCount();
-        
-        function search(query) {
-            if (!query || redirecting) return;
-            redirecting = true;
-            if (redirectBtn) redirectBtn.classList.remove("hidden");
-            increase();
+        (function() {
+          
+            const searchInput = document.getElementById("searchInputField");
+            const pasteButton = document.getElementById("pasteBtnNew");
+            const redirectHintDiv = document.getElementById("redirectHint");
+            const dailySpan = document.getElementById("dailyCounter");
+            const modeHourBtn = document.getElementById("modeHourBtn");
+            const modeTodayBtn = document.getElementById("modeTodayBtn");
+            const modeIndicatorSpan = document.getElementById("modeIndicator");
+            const themeBtn = document.getElementById("themeToggleBtn");
+            const themeIconSpan = document.getElementById("themeIconNew");
             
-            const encoded = encodeURIComponent(query.trim());
-            const url = `https://www.youtube.com/results?search_query=${encoded}&sp=${filters[currentMode]}`;
+          
+            const filters = {
+                hour: "EgIIAQ%3D%3D",
+                today: "EgIIAg%3D%3D"
+            };
             
-            if (searchBox) searchBox.value = "";
-            setTimeout(() => {
-                location.replace(url);
-            }, 500);
-        }
-        
-      
-        if (searchBox) {
-            searchBox.addEventListener("input", () => {
-                const val = searchBox.value.trim();
+            let currentMode = localStorage.getItem("youtubeSearchMode") || "hour";
+            let isRedirecting = false;
+            
+          
+            function getStartOfDayUTC() {
+                const now = new Date();
+                return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            }
+            
+            function getStorageData() {
+                try {
+                    return JSON.parse(localStorage.getItem("AmitTG")) || {};
+                } catch(e) { return {}; }
+            }
+            
+            function saveStorageData(data) {
+                localStorage.setItem("AmitTG", JSON.stringify(data));
+            }
+            
+            function resetIfNeeded() {
+                const todayStamp = getStartOfDayUTC();
+                let stats = getStorageData();
+                if (!stats.lastReset || stats.lastReset !== todayStamp) {
+                    stats = { count: 0, lastReset: todayStamp };
+                    saveStorageData(stats);
+                }
+                return stats;
+            }
+            
+            function increaseDailyCount() {
+                resetIfNeeded();
+                let stats = getStorageData();
+                stats.count = (stats.count || 0) + 1;
+                saveStorageData(stats);
+                updateDailyUI();
+            }
+            
+            function updateDailyUI() {
+                const stats = resetIfNeeded();
+                dailySpan.innerText = stats.count || 0;
+            }
+            
+          
+            function applyModeUI() {
+                if (currentMode === "hour") {
+                    modeHourBtn.classList.add("mode-btn-active");
+                    modeHourBtn.classList.remove("mode-btn-inactive");
+                    modeTodayBtn.classList.add("mode-btn-inactive");
+                    modeTodayBtn.classList.remove("mode-btn-active");
+                    modeIndicatorSpan.innerText = "Last Hour";
+                    modeIndicatorSpan.classList.remove("bg-blue-100", "dark:bg-blue-900/50");
+                    modeIndicatorSpan.classList.add("bg-orange-100", "dark:bg-orange-900/50");
+                } else {
+                    modeTodayBtn.classList.add("mode-btn-active");
+                    modeTodayBtn.classList.remove("mode-btn-inactive");
+                    modeHourBtn.classList.add("mode-btn-inactive");
+                    modeHourBtn.classList.remove("mode-btn-active");
+                    modeIndicatorSpan.innerText = "Today";
+                    modeIndicatorSpan.classList.add("bg-amber-100", "dark:bg-amber-900/50");
+                }
+                localStorage.setItem("youtubeSearchMode", currentMode);
+            }
+            
+            modeHourBtn.addEventListener("click", () => {
+                if (currentMode === "hour") return;
+                currentMode = "hour";
+                applyModeUI();
+                showToast("Switched to Last Hour", "bi-hourglass-split");
+            });
+            
+            modeTodayBtn.addEventListener("click", () => {
+                if (currentMode === "today") return;
+                currentMode = "today";
+                applyModeUI();
+                showToast("Switched to Today", "bi-calendar-check");
+            });
+            
+          
+            function triggerConfettiBurst() {
+                for (let i = 0; i < 36; i++) {
+                    const conf = document.createElement("div");
+                    conf.className = "confetti-piece-new";
+                    const colors = ["#f97316", "#ea580c", "#f59e0b", "#ef4444", "#ec4899", "#8b5cf6"];
+                    conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    conf.style.left = Math.random() * window.innerWidth + "px";
+                    conf.style.width = Math.random() * 9 + 6 + "px";
+                    conf.style.height = Math.random() * 12 + 8 + "px";
+                    conf.style.borderRadius = Math.random() > 0.5 ? "2px" : "50%";
+                    conf.style.animationDuration = Math.random() * 1.2 + 0.8 + "s";
+                    conf.style.animationDelay = Math.random() * 0.2 + "s";
+                    document.body.appendChild(conf);
+                    setTimeout(() => conf.remove(), 2000);
+                }
+            }
+            
+            function showToast(message, icon = "bi-info-circle") {
+                const toastEl = document.getElementById("globalToast");
+                const msgSpan = document.getElementById("toastMsg");
+                if (!toastEl) return;
+                msgSpan.innerHTML = `<i class="${icon} mr-1"></i> ${message}`;
+                toastEl.classList.add("show");
+                setTimeout(() => {
+                    toastEl.classList.remove("show");
+                }, 2300);
+            }
+            
+            function performSearch(query) {
+                if (!query || query.trim().length < 3) {
+                    showToast("🔍 Type at least 3 characters!", "bi-emoji-frown");
+                    return false;
+                }
+                if (isRedirecting) return false;
+                
+                isRedirecting = true;
+                redirectHintDiv.classList.remove("hidden");
+                increaseDailyCount();
+                triggerConfettiBurst();
+                
+                const trimmedQuery = query.trim();
+                const encodedQuery = encodeURIComponent(trimmedQuery);
+                const spParam = filters[currentMode];
+                const finalUrl = `https://www.youtube.com/results?search_query=${encodedQuery}&sp=${spParam}`;
+                
+                searchInput.value = "";
+                
+                setTimeout(() => {
+                    window.location.replace(finalUrl);
+                }, 600);
+                return true;
+            }
+            
+          
+            let debounceTimer;
+            searchInput.addEventListener("input", (e) => {
+                const val = e.target.value.trim();
+                if (debounceTimer) clearTimeout(debounceTimer);
                 if (val.length >= 3) {
-                    search(val);
+                    debounceTimer = setTimeout(() => {
+                        performSearch(val);
+                    }, 400);
                 }
             });
-        }
-        
-    
-        if (pasteBtn) {
-            pasteBtn.addEventListener("click", async () => {
+            
+          
+            pasteButton.addEventListener("click", async () => {
                 try {
-                    const text = await navigator.clipboard.readText();
-                    if (text && text.trim()) {
-                        if (searchBox) searchBox.value = text.trim();
-                        if (text.trim().length >= 3) {
-                            search(text.trim());
+                    const clipboardText = await navigator.clipboard.readText();
+                    if (clipboardText && clipboardText.trim().length > 0) {
+                        searchInput.value = clipboardText.trim();
+                        if (clipboardText.trim().length >= 3) {
+                            performSearch(clipboardText.trim());
+                        } else {
+                            showToast("📋 Pasted text too short (min 3 letters)", "bi-clipboard-data");
                         }
                     } else {
-                        if (toast) {
-                            toast.classList.remove("hidden");
-                            setTimeout(() => toast.classList.add("hidden"), 3000);
-                        }
+                        showToast("📭 Clipboard is empty", "bi-clipboard-x");
                     }
                 } catch (err) {
-                    if (toast) {
-                        toast.classList.remove("hidden");
-                        setTimeout(() => toast.classList.add("hidden"), 3000);
-                    }
+                    showToast(" Permission needed for clipboard", "bi-shield-exclamation");
                 }
             });
-        }
-        
-      
-        document.addEventListener("visibilitychange", () => {
-            if (!document.hidden) {
-                redirecting = false;
-                if (redirectBtn) redirectBtn.classList.add("hidden");
-                if (searchBox) searchBox.value = "";
-                loadCount();
+            
+          
+            document.addEventListener("visibilitychange", () => {
+                if (!document.hidden) {
+                    isRedirecting = false;
+                    redirectHintDiv.classList.add("hidden");
+                    if (searchInput) searchInput.value = "";
+                    updateDailyUI();
+                }
+            });
+            
+          
+            function initTheme() {
+                const savedTheme = localStorage.getItem("radheTheme") || "light";
+                if (savedTheme === "dark") {
+                    document.body.classList.add("dark-mode");
+                    themeIconSpan.classList.remove("bi-moon-fill");
+                    themeIconSpan.classList.add("bi-brightness-high-fill");
+                } else {
+                    document.body.classList.remove("dark-mode");
+                    themeIconSpan.classList.remove("bi-brightness-high-fill");
+                    themeIconSpan.classList.add("bi-moon-fill");
+                }
             }
-        });
-        
-      
-        document.querySelectorAll('button, a').forEach(el => {
-            el.addEventListener('touchstart', function() {
-                if (!this.disabled) {
-                    this.style.transform = 'scale(0.96)';
+            
+            themeBtn.addEventListener("click", () => {
+                if (document.body.classList.contains("dark-mode")) {
+                    document.body.classList.remove("dark-mode");
+                    localStorage.setItem("radheTheme", "light");
+                    themeIconSpan.classList.remove("bi-brightness-high-fill");
+                    themeIconSpan.classList.add("bi-moon-fill");
+                    showToast("Day mode activated", "bi-sun");
+                } else {
+                    document.body.classList.add("dark-mode");
+                    localStorage.setItem("radheTheme", "dark");
+                    themeIconSpan.classList.remove("bi-moon-fill");
+                    themeIconSpan.classList.add("bi-brightness-high-fill");
+                    showToast(" Dark mode on", "bi-moon-stars");
                 }
             });
-            el.addEventListener('touchend', function() {
-                this.style.transform = '';
+            
+            
+            function createParticles() {
+                const container = document.getElementById('particles');
+                if (!container) return;
+                for (let i = 0; i < 35; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    const size = Math.random() * 70 + 15;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 20 + 's';
+                    particle.style.animationDuration = Math.random() * 18 + 12 + 's';
+                    particle.style.opacity = Math.random() * 0.35 + 0.1;
+                    particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
+                    container.appendChild(particle);
+                }
+            }
+            
+          
+            const allButtons = document.querySelectorAll("button");
+            allButtons.forEach(btn => {
+                btn.addEventListener("touchstart", function(e) {
+                    if (!this.disabled) this.style.transform = "scale(0.96)";
+                });
+                btn.addEventListener("touchend", function() {
+                    this.style.transform = "";
+                });
+                btn.addEventListener("mouseleave", function() {
+                    this.style.transform = "";
+                });
+                btn.addEventListener("mousedown", function() {
+                    if (!this.disabled) this.style.transform = "scale(0.97)";
+                });
+                btn.addEventListener("mouseup", function() {
+                    this.style.transform = "";
+                });
             });
-            el.addEventListener('mouseleave', function() {
-                this.style.transform = '';
-            });
-        });
-    })();
-    </script>
-    
-    <script>
-    if ("serviceWorker" in navigator) { 
-        window.addEventListener("load", () => { 
-            navigator.serviceWorker.register("sw.js").catch(console.error);
-        });
-    }
+            
+            searchInput.classList.add("focus:ring-2", "focus:ring-orange-400");
+            
+          
+            applyModeUI();
+            updateDailyUI();
+            initTheme();
+            createParticles();
+            
+        })();
     </script>
 </body>
 </html>
